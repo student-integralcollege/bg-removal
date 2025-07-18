@@ -12,7 +12,11 @@ const Navbar = () => {
       <Link to="/"><img className='w-32 sm:w-44' src={assets.logo} alt="" /></Link>
       {
         isSignedIn
-          ? <div>
+          ? <div className='flex item-center gap-2 sm:gap-3'>
+            <button>
+              <img src={assets.credit_icon} alt="" />
+              <p>Credits: {credit}</p>
+            </button>
             <UserButton />
           </div>
           : <button onClick={() => openSignIn({})} className='bg-zinc-800 text-white flex items-center gap-4 px-4 py-2 sm:px-8 sm:py-3 text-sm rounded-full'>

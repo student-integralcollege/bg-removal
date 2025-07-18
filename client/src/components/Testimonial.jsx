@@ -10,11 +10,11 @@ const Testimonial = () => {
           <div className='bg-white p-6 rounded-xl drop-shadow-md max-w-lg m-auto hover:scale-105 transition-all  duration-700' key={index}>
             <p className=' text-4xl text-gray-500'>“</p>
             <p className='text-sm text-gray-500'>{item.text}</p>
-            <div className=''>
-                <img src={item.image} alt="" />
+            <div className='flex items-center gap-3 mt-5'>
+                <img className='w-9 rounded-full' src={item.image} alt="" />
                 <div>
                     <p className='font-semibold'>{item.author}</p>
-                    <p className='text-gray-500'>{item.jobTitle}</p>
+                    <p className=' text-sm text-gray-600'>{item.jobTitle}</p>
                 </div>
             </div>
           </div>
