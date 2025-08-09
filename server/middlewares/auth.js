@@ -7,7 +7,6 @@ const authUser = (req, res, next) => {
     if (!token) {
       return res.status(401).json({success:false, message: "No token provided" });
     }
- 
     const token_decoded = jwt.decode(token);
     req.body.clerk_id = token_decoded.clerk_id;
     next();

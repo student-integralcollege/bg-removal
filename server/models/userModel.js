@@ -4,7 +4,7 @@ const userSchema = new mongoose.Schema({
   clerkId: {
     type: String,
     required: true,
-    unique
+    unique: true,
   },
   email: {
     type: String,
@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
   },
   photo: {
     type: String,
-    required: true,    
+    required: true,
   },
   firstName: {
     type: String,
@@ -26,6 +26,6 @@ const userSchema = new mongoose.Schema({
     default: 5,
   },
 });
-const User = mongoose.model("User", userSchema);
 
+const User = mongoose.model("User", userSchema);
 export default User;

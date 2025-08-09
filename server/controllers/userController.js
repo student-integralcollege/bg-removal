@@ -1,27 +1,26 @@
 import { Webhook } from "svix"
 import userModel from "../models/userModel.js"; // Adjust the import path as necessary
 
-const clerkwebhook = async (req, res) => {
+export const clerkWebhooks = async (req, res) => {
     try {
         const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
-        await whook.verify((JSON.stringify(req.body)), {
+        await whook.verify(req.body, {
             "svix-id": req.headers["svix-id"],
             "svix-timestamp": req.headers["svix-timestamp"],
             "svix-signature": req.headers["svix-signature"]
         });
-
-        const { data, type } = req.body;
+        const { data, type } = JSON.parse(req.body);
 
         switch (type) {
             case "user.created": {
                 const userData = {
                     clerkId: data.id,
                     email: data.email_addresses[0].email_address,
-                    firstname: data.first_name,
-                    lastname: data.last_name,
+                    firstName: data.first_name,
+                    lastName: data.last_name,
                     photo: data.image_url                    // Add any other relevant user information
                 };
-                await User.create(userData); // Assuming you have a User model to handle user data
+                await userModel.create(userData); // Use userModel instead of User
                 res.json({ message: "User created successfully" });
                 break;
             }
@@ -29,17 +28,17 @@ const clerkwebhook = async (req, res) => {
             case "user.updated": {
                 const userUpdated = {
                     email: data.email_addresses[0].email_address,
-                    firstname: data.first_name,
-                    lastname: data.last_name,
+                    firstName: data.first_name,
+                    lastName: data.last_name,
                     photo: data.image_url
                 };
-                await User.findOneAndUpdate({ clerkId: data.id }, userUpdated);
+                await userModel.findOneAndUpdate({ clerkId: data.id }, userUpdated);
                 res.json({ message: "User updated successfully" });
                 break;
             }
 
             case "user.deleted": {
-                await User.findOneAndDelete({ clerkId: data.id });
+                await userModel.findOneAndDelete({ clerkId: data.id });
                 res.json({ message: "User deleted successfully" });
                 break;
             }
@@ -54,5 +53,19 @@ const clerkwebhook = async (req, res) => {
     }
     // Handle the webhook event
 };
-export { clerkwebhook };
+
+export const userCredits = async (req, res) => {
+    try {
+        const clerkId = req.user.clerkId;
+        const user = await userModel.findOne({ clerkId });
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+        res.json({ success: true, creditBalance: user.creditBalance });
+    } catch (error) {
+        console.error("Error fetching user credits:", error);
+        res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+};
+
 
